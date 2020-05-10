@@ -1,3 +1,5 @@
+$primary-color: #0070f3;
+
 html,
 body {
     padding: 0;
@@ -13,7 +15,7 @@ body {
 }
 
 a {
-    color: #0070f3;
+    color: $primary-color;
     text-decoration: none;
 }
 
