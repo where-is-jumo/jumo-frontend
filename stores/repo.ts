@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { types, Instance, applySnapshot } from 'mobx-state-tree'
+import { types, Instance, applySnapshot, flow } from 'mobx-state-tree'
+import { GET_REPOS_API } from '../api'
 
 // Instance is a typescript helper that extracts the type of the model instance
 export type RepoModel = Instance<typeof Repo>
@@ -8,8 +8,6 @@ export interface RepoStoreState {
   isLoading: boolean,
   repos: RepoModel[],
 }
-
-let store: RepoStoreModel | undefined
 
 const Repo = types
   .model('Repo', {
@@ -31,26 +29,28 @@ const RepoStore = types
     isLoading: types.boolean,
     repos: types.array(Repo),
   })
-  .actions(self => {
-    return {
-      load(): void {
-        // Load repos
-        fetch("url", (res: any): void => {
-          self.repos = res.data.map(repo => Repo.create(repo));
+  .actions(self => ({
+    loadRepos: flow(function* loadRepos(reload = false) {
+      let repos = yield fetch(GET_REPOS_API)
+        .then(response => response.json())
+        .then(data => {
+          return data.map((repo): RepoModel => Repo.create(repo));
         })
-      },
-      addRepo(repo: RepoModel): void {
-        self.repos.push(repo);
-      },
-      removeRepoByid(id: number): void {
-        const filteredRepos = this.repos.filter((repo: RepoModel): boolean => repo.id !== id);
-        self.repos.replace(filteredRepos);
-      },
-      findRepoById(id: number): RepoModel | null {
-        return self.repos.find(repo => repo.id === id) || null;
-      },
-    }
+      self.repos = repos;
+      self.isLoading = false;
+    }),
+    addRepo(repo: RepoModel): void {
+      self.repos.push(repo);
+    },
+    removeRepoByid(id: number): void {
+      const filteredRepos = this.repos.filter((repo: RepoModel): boolean => repo.id !== id);
+      self.repos.replace(filteredRepos);
+    },
+    findRepoById(id: number): RepoModel | null {
+      return self.repos.find(repo => repo.id === id) || null;
+    },
   })
+  )
   .views(self => {
     return {
       get repoNames() {
@@ -62,6 +62,8 @@ const RepoStore = types
       }
     }
   })
+
+let store: RepoStoreModel | undefined
 
 export function initializeRepoStore(snapshot = null): RepoStoreModel {
   const _store: RepoStoreModel = store || RepoStore.create({
@@ -82,9 +84,3 @@ export function initializeRepoStore(snapshot = null): RepoStoreModel {
 
   return store
 }
-
-
-// export function useStore(initialState: RepoStoreState): RepoStoreModel {
-//   const store = useMemo(() => initializeRepoStore(initialState), [initialState])
-//   return store
-// }

@@ -1,4 +1,4 @@
-import App, { Container } from "next/app";
+import App from "next/app";
 import React from "react";
 import { Provider } from "mobx-react";
 import RootStore from "../stores";
@@ -6,12 +6,10 @@ import RootStore from "../stores";
 export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
-    const root = new RootStore();
+    const stores = new RootStore();
     return (
-      <Provider {...root}>
-        <Container>
-          <Component {...pageProps} />
-        </Container>
+      <Provider {...stores}>
+        <Component {...pageProps} />
       </Provider>
     );
   }
