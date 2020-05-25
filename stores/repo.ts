@@ -1,5 +1,5 @@
 import { types, Instance, applySnapshot, flow } from 'mobx-state-tree'
-import { GET_REPOS_API } from '../api'
+import { fetchRepos } from '../api'
 
 // Instance is a typescript helper that extracts the type of the model instance
 export type RepoModel = Instance<typeof Repo>
@@ -31,8 +31,7 @@ const RepoStore = types
   })
   .actions(self => ({
     loadRepos: flow(function* loadRepos(reload = false) {
-      let repos = yield fetch(GET_REPOS_API)
-        .then(response => response.json())
+      let repos = yield fetchRepos()
         .then(data => {
           return data.map((repo): RepoModel => Repo.create(repo));
         })
