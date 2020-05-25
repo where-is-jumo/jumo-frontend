@@ -4,8 +4,8 @@ import Link from 'next/link'
 export default () => (
   <ul>
     <li>
-      <Link href="/a" as="/a">
-        <a>a</a>
+      <Link href="/repos" as="/repos">
+        <a>repos</a>
       </Link>
     </li>
     <li>
