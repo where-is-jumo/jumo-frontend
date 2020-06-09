@@ -15,8 +15,8 @@ export default () => (
                 </Link>
             </li>
             <li>
-                <Link href="/b" as="/b">
-                    <a>b</a>
+                <Link href="/button" as="/button">
+                    <a>button</a>
                 </Link>
             </li>
         </ul>
