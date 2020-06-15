@@ -9,3 +9,6 @@ dist
 
 # mac specific file
 .DS_Store
+
+# Web-Storm files
+.idea
