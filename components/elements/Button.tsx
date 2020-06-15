@@ -1,4 +1,4 @@
-import React, {Component, CSSProperties} from 'react'
+import React, {Component, CSSProperties, ReactNode} from 'react'
 
 interface ButtonProps {
     content?: string;
@@ -6,11 +6,12 @@ interface ButtonProps {
     disabled?: boolean;
     className?: string;
     style?: CSSProperties;
+    children?: ReactNode;
 }
 
-class Button extends Component<ButtonProps> {
-    style: CSSProperties = {
-        cursor: this.props.disabled ? 'not-allowed' : 'pointer',
+export default (props: ButtonProps) => {
+    const style: CSSProperties = {
+        cursor: props.disabled ? 'not-allowed' : 'pointer',
         display: 'inline-block',
         outline: 0,
         border: 'none',
@@ -21,24 +22,20 @@ class Button extends Component<ButtonProps> {
         backgroundColor: '#2185d0',
         color: '#fff',
         borderRadius: 4,
-        ...this.props.style,
+        ...props.style,
     }
 
-    public render() {
-        return (
-            <button
-                onClick={this.props.onClick}
-                disabled={this.props.disabled}
-                className={((this.props.className + " ") || "") + "ui button"}
-                style={{
-                    ...this.style,
-                    opacity: this.props.disabled ? 0.5 : 1
-                }}
-            >
-                {this.props.content || this.props.children}
-            </button>
-        );
-    }
+    return (
+        <button
+            onClick={props.onClick}
+            disabled={props.disabled}
+            className={((props.className + " ") || "") + "ui button"}
+            style={{
+                ...style,
+                opacity: props.disabled ? 0.5 : 1
+            }}
+        >
+            {props.content || props.children}
+        </button>
+    );
 }
-
-export default Button
